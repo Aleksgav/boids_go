@@ -4,7 +4,7 @@ import (
 	"image/color"
 	"log"
 
-	"github.com/hajimehoshi/ebiten"
+	ebiten "github.com/hajimehoshi/ebiten/v2"
 )
 
 type BoidsSim struct {
@@ -29,17 +29,17 @@ func NewBoidsSim(screenWidth, screenHeight, bQuantity int, bColor color.RGBA) *B
 	return bs
 }
 
-func (bs *BoidsSim) Update(screen *ebiten.Image) error {
-	if !ebiten.IsDrawingSkipped() {
-		for _, boid := range bs.bSwarm.boids {
-			screen.Set(int(boid.position.x+1), int(boid.position.y), bs.bColor)
-			screen.Set(int(boid.position.x-1), int(boid.position.y), bs.bColor)
-			screen.Set(int(boid.position.x), int(boid.position.y-1), bs.bColor)
-			screen.Set(int(boid.position.x), int(boid.position.y+1), bs.bColor)
-		}
-	}
-
+func (bs *BoidsSim) Update() error {
 	return nil
+}
+
+func (bs *BoidsSim) Draw(screen *ebiten.Image) {
+	for _, boid := range bs.bSwarm.boids {
+		screen.Set(int(boid.position.x+1), int(boid.position.y), bs.bColor)
+		screen.Set(int(boid.position.x-1), int(boid.position.y), bs.bColor)
+		screen.Set(int(boid.position.x), int(boid.position.y-1), bs.bColor)
+		screen.Set(int(boid.position.x), int(boid.position.y+1), bs.bColor)
+	}
 }
 
 func (bs *BoidsSim) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -47,8 +47,8 @@ func (bs *BoidsSim) Layout(outsideWidth, outsideHeight int) (screenWidth, screen
 }
 
 func main() {
-	width := 640
-	height := 360
+	width := 1280
+	height := 720
 
 	title := "BOIDS"
 
@@ -57,7 +57,7 @@ func main() {
 	ebiten.SetWindowSize(width, height)
 	ebiten.SetWindowTitle(title)
 
-	bs := NewBoidsSim(640, 360, 500, greenColor)
+	bs := NewBoidsSim(width, height, 500, greenColor)
 
 	if err := ebiten.RunGame(bs); err != nil {
 		log.Fatal(err)
